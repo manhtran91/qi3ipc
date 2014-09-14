@@ -26,7 +26,7 @@ include(CheckIncludeFiles)
 set(I3IPC_H "i3/ipc.h")
 check_include_files (${I3IPC_H} HAVE_I3IPC)
 if(NOT HAVE_I3IPC)
-  message(FATAL_ERROR "${I3IPC_H} is not found" )
+  message(FATAL_ERROR "${I3IPC_H} is not found. Remember to remove CMakeCache.")
 endif()
 
 # If the build script is called from a parent project,
