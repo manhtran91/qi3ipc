@@ -17,6 +17,8 @@ set(CMAKE_AUTOMOC ON)
 # This was apparently needed for finding KF5
 find_package(ECM 0.0.11 REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR})
+include(KDEInstallDirs)
+include(KDECMakeSettings)
 
 find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS WindowSystem)
 
@@ -37,7 +39,7 @@ endif()
 
 # Set the CMake module path to the project cmake directory. This location will
 # first be searched for external CMake packages.
-set(CMAKE_MODULE_PATH ${cmake_directory})
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${cmake_directory})
 
 # Include the library build configuration. This will also include the custom
 # macro defined for the project.
@@ -68,3 +70,19 @@ target_link_libraries(${PROJECT_NAME}
     Qt5::X11Extras
     ${XCB_XCB_LIBRARIES}
 )
+
+# Build the tests
+
+set( EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR} )
+
+include(ECMMarkAsTest)
+
+enable_testing()
+
+set(qi3sockettest_SRCS ${tests_dir}/qi3sockettest.cpp)
+
+add_test(qi3sockettest ${qi3sockettest_SRCS})
+
+#target_link_libraries(qi3sockettest ${PROJECT_NAME})
+
+ecm_mark_as_test(qi3sockettest)

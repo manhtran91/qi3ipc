@@ -2,22 +2,26 @@
 
 #include <QtX11Extras/QX11Info>
 
-#include <kwindowsystem.h>
-#include <kservicetype.h>
+#include <KWindowSystem/KWindowSystem>
 
 #include <netwm.h>
 
-#include <i3/ipc.h>
+namespace I3IPC {
 
 Qi3Socket::Qi3Socket(QObject *parent)
-        : QLocalSocket(parent)
+    : QLocalSocket(parent)
 {
+
+    connect(this, SIGNAL(connected()),this, SLOT(connected()));
+    connect(this, SIGNAL(disconnected()),this, SLOT(disconnected()));
+    connect(this, SIGNAL(bytesWritten(qint64)),this, SLOT(bytesWritten(qint64)));
+
     QString socketPath = getSocketPath();
     qDebug() << "Found socket: " << socketPath;
     connectToServer(socketPath);
 }
 
-void Qi3Socket::sendMessage(quint32 messageType, const char *payload)
+void Qi3Socket::sendMessage(MessageType messageType, const char *payload)
 {
     QByteArray message;
     message.append(I3_IPC_MAGIC);
@@ -55,14 +59,14 @@ QString const Qi3Socket::getSocketPath(void)
     }
 
     propertyCookie = xcb_get_property_unchecked(
-            connection,                 // conn
-            false,                      // _delete
-            rootWindow,                 // window
-            atomReply->atom,            // property
-            XCB_GET_PROPERTY_TYPE_ANY,  // type
-            0,                          // long_offset
-            contentMaxWords             // long_length
-    );
+                                                connection,                 // conn
+                                                false,                      // _delete
+                                                rootWindow,                 // window
+                                                atomReply->atom,            // property
+                                                XCB_GET_PROPERTY_TYPE_ANY,  // type
+                                                0,                          // long_offset
+                                                contentMaxWords             // long_length
+                                                );
 
     propertyReply = xcb_get_property_reply(connection, propertyCookie, NULL);
 
@@ -86,20 +90,22 @@ QString const Qi3Socket::getSocketPath(void)
     return path;
 }
 
-// void Qi3Socket::connected()
-// {
-//     qDebug() << "Connected!";
-// }
+void Qi3Socket::connected()
+{
+    qDebug() << "Connected!";
+}
 
-// void Qi3Socket::disconnected()
-// {
-//     qDebug() << "Disconnected!";
-// }
+void Qi3Socket::disconnected()
+{
+    qDebug() << "Disconnected!";
+}
 
-// void Qi3Socket::bytesWritten(qint64 bytes)
-// {
-//     qDebug() << bytes << " bytes written.";
-// }
+void Qi3Socket::bytesWritten(qint64 bytes)
+{
+    qDebug() << bytes << " bytes written.";
+}
+
+}
 
 // QString Qi3Socket::extractPayload(payloadLength)
 

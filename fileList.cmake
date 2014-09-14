@@ -1,12 +1,10 @@
-# Author: Félix C. Morency
-# 2011.10
-
-#To keep the file list clean
+# To keep the file list clean
 set(hdrs_dir ${${PROJECT_NAME}_include_dir})
 set(srcs_dir ${CMAKE_CURRENT_SOURCE_DIR}/${source_dir})
+set(tests_dir ${CMAKE_CURRENT_SOURCE_DIR}/${source_dir}/tests)
 
-#Project header files
+# Headers
 set(hdrs ${hdrs_dir}/qi3socket.h)
 
-#Project source files
+# Sources
 set(srcs ${srcs_dir}/qi3socket.cpp)
